@@ -2,7 +2,7 @@
 
 > An awesome project.
 
-hello docsify !
+hello docsify , wtf!
 
 
-[>> 操作指南](guide.md)
+[>> 玛德, 终于部署好了](guide.md)
