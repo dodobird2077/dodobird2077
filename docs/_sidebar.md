@@ -19,5 +19,6 @@
     * [1.下拉列表](/bd2-use/select/)
     * [2.如何封装API请求和url](/bd2-use/api/)
     * [3.控制器规范(初始化,数据返回等)](/bd2-use/controller/)
+    * [4.双击弹窗Tab页,API获取数据](/bd2-use/scence/tab.md)
     * [q.常见问题](/bd2-use/question/)
 
