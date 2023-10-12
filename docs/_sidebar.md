@@ -18,5 +18,6 @@
 * BuildAdmin 2.0 使用
     * [1.下拉列表](/bd2-use/select/)
     * [2.如何封装API请求和url](/bd2-use/api/)
+    * [3.控制器规范(初始化,数据返回等)](/bd2-use/controller/)
     * [q.常见问题](/bd2-use/question/)
 
