@@ -5,8 +5,8 @@
 
 
 * docsify 入门
+    * [中文文档](guide/doc/)
     * [快速安装](guide/install/)
-    * [使用入门](guide/use/)
 
 * java 入门
     * [环境配置]()
