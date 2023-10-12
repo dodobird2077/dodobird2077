@@ -5,4 +5,4 @@
 hello docsify , wtf!
 
 
-[>> 博客](guide.md)
+[>> Docsify入门](/guide/install/)
