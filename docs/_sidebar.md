@@ -17,5 +17,6 @@
 
 * BuildAdmin 2.0 使用
     * [1.下拉列表](/bd2-use/select/)
+    * [2.下拉列表](/bd2-use/select/)
     * [q.常见问题](/bd2-use/question/)
 

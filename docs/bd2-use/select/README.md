@@ -22,6 +22,7 @@ import { goodsCategory } from '/@/api/controllerUrls'
 },
 ```
 `web\src\api\controllerUrls.ts`
+
 ```ts
 // 这里其实就是商品分类的菜单, 可灵活变更为其他数据
 export const goodsCategory = '/admin/goodsCategory/'
@@ -31,6 +32,7 @@ export const groupSelect = '/admin/member/groupSelect/'
 ### A2.编辑页中 `这里以'添加用户'页面为例`
 1. 首页的添加用户按钮, 这里忽略
 2. 编辑页面中
+
 ```html
 <FormItem 
     label="角色" 
@@ -50,15 +52,16 @@ import { groupSelect } from '/@/api/controllerUrls'
 ```
 
 `web\src\api\controllerUrls.ts`
+
 ```ts
-// 活用用户组数据
+// 用户组数据
 export const groupSelect = '/admin/member/groupSelect/'
 ```
 
 
 ## B.普通下拉列表
 
-### B.1 自定义页面中
+### 1. 自定义页面中
 ```html
 <el-form :model="form">
 
@@ -80,8 +83,10 @@ import mobileConfig from '/@/api/config/sim/mobile'
 import {getUserList} from '/@/api/public/member/member'
 </script>
 ```
+
 - 封装的获取下拉列表API请求
 `\web\src\api\backend\public\`下
+
 ```ts
 import createAxios from '/@/utils/axios'
 // 获取用户列表,一位数组
