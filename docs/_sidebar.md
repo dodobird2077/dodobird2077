@@ -17,6 +17,6 @@
 
 * BuildAdmin 2.0 使用
     * [1.下拉列表](/bd2-use/select/)
-    * [2.下拉列表](/bd2-use/select/)
+    * [2.如何封装API请求和url](/bd2-use/api/)
     * [q.常见问题](/bd2-use/question/)
 
