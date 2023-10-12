@@ -6,7 +6,8 @@
     * [文档和目录结构](guide/dir/)
     * [快速安装](guide/install/)
 
-
+* 综合 
+    * [综合](other/other.md)
 * Javaweb2023
     * [说明](/Javaweb2023/README.md)
 
