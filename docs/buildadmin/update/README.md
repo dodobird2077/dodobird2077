@@ -46,6 +46,7 @@ git stash pop
 composer update
 
 # 更新前端依赖
+cd web
 pnpm install
 
 # 更新数据表结构
@@ -58,4 +59,4 @@ php think migrate:run
 暂无
 ```
 
-![img](/docs/buildadmin/update/update.png)
+![img](/buildadmin/update/update.png)
