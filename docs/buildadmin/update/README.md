@@ -53,7 +53,17 @@ pnpm install
 php think migrate:run
 ```
 
-## 调整不兼容更新
+## 关于推送到哪个远程仓库
+```bash
+git remote -v
+buildadmin      https://gitee.com/wonderful-code/buildadmin.git (fetch)
+buildadmin      https://gitee.com/wonderful-code/buildadmin.git (push)
+origin  https://github.com/dodobird2077/demo0922.git (fetch)
+origin  https://github.com/dodobird2077/demo0922.git (push)
+
+// 其实直接推送到main就行了, 不用说切换哪个远程仓库, main就是github上面的那个
+git push origin main
+```
 
 ```bash
 暂无
