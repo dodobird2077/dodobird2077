@@ -1,9 +1,9 @@
 # 自定义添加页面, 带文件导入及文本框二选一
 
 
-## 步骤
 
-1. 首先禁用列表页的添加, b并增加自定义按钮
+## 1. 增加自定义按钮
+
 ```html
 <template>
     <div class="default-main ba-table-box">
@@ -32,7 +32,7 @@ provide('isOpen', isOpen)
 </script>
 ```
 
-2. `重点:` 弹窗转让表单
+## 2. **重点**:` 弹窗转让表单
 
 ```html
 <template>
@@ -142,7 +142,11 @@ const onSuccess = (res: any) => {
 </style>
 ``` 
 
-3. 封装带文件上传和不带文件上传的API请求 `web\src\api\controllerUrls.ts`
+## 3. 封装上传的API请求 
+
+- 包含: 带文件上传和不带文件上传的
+
+- `web\src\api\controllerUrls.ts`
 
 ```js
 // 商品转让: 1.文件导入, 2.text导入
@@ -156,7 +160,8 @@ export function transferGoods(form: any) {
 }
 ```
 
-4. 后端控制器 `app\admin\controller\Goods.php`
+## 4. 后端控制器 
+- `app\admin\controller\Goods.php`
 
 ```php
 class Goods extends Backend
@@ -205,7 +210,7 @@ class Goods extends Backend
 }
 ```
 
-5. 在控制器的公共父类中, 定义获取文件上传数据的方法
+##  5. 在控制器的公共父类中, 封装获取文件上传数据的方法
 
 ```php
 class Backend extends Api
