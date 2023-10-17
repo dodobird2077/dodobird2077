@@ -1,6 +1,8 @@
 # 自定义添加页面, 带文件导入及文本框二选一
 
 
+## 步骤
+
 1. 首先禁用列表页的添加, b并增加自定义按钮
 ```html
 <template>
@@ -241,7 +243,28 @@ class Backend extends Api
     public function getTextData()
     {
         $text = $this->request->post('text');
-        dd($text);
+        $lines = explode("\n", $text);
+        // 去除每行的首尾空白
+        $cleanedLines = array_map('trim', $lines);
+        // 去除空白行
+        $result = array_filter($cleanedLines, function($line) {
+            return !empty($line);
+        });
+
+        // 重新索引数组
+        $data = array_values($result);
+        dd($data);
     }
 }
+
+## 跨域问题
+
+- 加上index.php, 同时注意符号, &,? 
+
+```js
+export const importGoods = url + '/admin/goods/tramsferGoods&batoken=' + token // 修改前
+export const transferGoods = url + '/index.php/admin/goods/tramsferGoods?batoken=' + token // 修改后
+```
+
+
 ```
