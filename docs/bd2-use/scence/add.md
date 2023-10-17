@@ -256,6 +256,7 @@ class Backend extends Api
         dd($data);
     }
 }
+```
 
 ## 跨域问题
 
