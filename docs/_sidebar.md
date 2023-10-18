@@ -28,5 +28,6 @@
     * [6.文件导入和导出](/bd2-use/scence/file.md)
     * [7.弹窗传值,组件间传值](/bd2-use/scence/value.md)
     * [8.自定义添加页面, 带导入](/bd2-use/scence/add.md)
+    * [9.首页仪表盘自定义](/bd2-use/scence/index.md)
     * [q.常见问题](/bd2-use/question/)
 
