@@ -48,7 +48,7 @@ https://www.bilibili.com/video/BV1MU4y1Y7h5/?p=2&spm_id_from=pageDriver&vd_sourc
 
 - 文件状态
 
-| 工作区(workspace) | 暂存区(index) | 仓库(repository) |
+| 1.工作区(workspace) | 2.暂存区(index) | 3.仓库(repository) |
 | ------- | ------- | ------- |
 | 1.未跟踪(untracked)  | -  | -  |
 | 2.未暂存(unstaged)  | 3.已暂存(staged)  | commit  |
@@ -82,6 +82,19 @@ git log --pretty=oneline --abbrev-commit
 git log --pretty=oneline --abbrev-commit --all --graph 
 ```
 
+### 指令别名, alias
+
+1. 创建文件 `touch ~/.bashrc`
+
+2. 编辑
+
+```bash
+alias git-log=' git log --pretty=oneline --all --graph --abbrev-commit'
+```
+
+ 3. 生效  `source ~/.bashrc`
+ 
+
 ### 5. 版本回退 (退回到某个版本)
 
 ```bash
@@ -109,4 +122,118 @@ $ git log --pretty=oneline --abbrev-commit
 *.log
 ```
 
-### P8.基础练习(学习中)
+### P9.分支
+
+1. 查看分支 `git branch`
+
+```bash
+$ git branch
+* master
+```
+
+2. 创建分支 `git branch demo01`
+
+```bash
+$ git branch demo01
+$ git branch
+  demo01
+* master
+```
+
+3. 切换分支 `git checkout demo01`
+
+```bash
+$ git checkout demo01
+Switched to branch 'demo01'
+
+# 切换分支, 如果不存在, 直接创建分支
+$ git checkout -b demo02
+Switched to branch 'demo01'
+```
+4. 合并分支流程演示 `git merge`
+
+```bash
+# 1.切换到 demo01分支
+$ git checkout demo01
+Switched to branch 'demo01'
+
+# 2.在当前demo01分支添加文件并提交 demo001.txt
+$ touch demo001.txt
+$ git add demo001.txt
+$ git commit -m '在demo01分支添加demo001.txt'
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 demo001.txt
+
+# 3.切换回master分支 (对, 先回master)
+git checkout master
+
+# 4.将demo01分支的内容合并到master (会进入一个类似vim界面, wq退出即可)
+
+$ git merge demo01
+Merge made by the 'ort' strategy.
+ demo001.txt | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 demo001.txt
+
+# 5.查看log
+$ git-log
+*   4f51478 (HEAD -> master) Merge branch 'demo01'
+|\
+| * 4d6be01 (demo01) 在demo01分支添加demo001.txt
+* | 66d0dfb ignore
+|/
+* 5dee31a 提交1
+
+```
+
+6. 删除分支 `git branch -d demo01`
+
+## P10. 解决冲突 
+
+- 1.在master分支创建dev01.txt,并修改内容,并提交
+
+```demo001.txt
+number=1
+```
+
+- 2.创建切换到dev01分支, 并切改dev01.txt内容并提交(注意要等第一步执行完再创建此分支)
+
+```demo001.txt
+number=2
+```
+
+- 3.切换回master分支, 先修改dev01.txt的内容(重点: 不要直接合并, 而是先修改, 然后切记要提交)
+
+```bash
+number=3
+```
+
+- 4.合并dev分支到master (注意这个`failed`)
+
+```bash
+$ git merge dev01
+Auto-merging dev01.txt
+CONFLICT (content): Merge conflict in dev01.txt
+Automatic merge failed; fix conflicts and then commit the result.
+```
+
+- 5.此时打开dev01.txt查看 (目前在master分支)
+
+```dev01.txt
+<<<<<<< HEAD
+number=3
+=======
+number=2
+>>>>>>> dev01
+```
+
+- 6.重点: 解决冲突
+
+    - 首先修改dev01.txt文件为自己想要的内容
+    - 然后就add, commit提交即可
+
+```dev01.txt
+number=finaly
+```
+
+## P11.分支使用流程(学习中)
