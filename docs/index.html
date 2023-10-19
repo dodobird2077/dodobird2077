@@ -18,6 +18,22 @@
       loadSidebar: true,
       subMaxLevel:3, //设置左侧菜单栏层级
       // loadNavBar: true, //右上角的导航栏, 如果不显示和上面那个层级有关
+
+
+      // 搜索功能
+      search: {
+        paths: 'auto',
+        placeholder: '搜索',
+        noData: '找不到结果',
+        depth: 3
+      },
+
+      // 复制
+      copyCode: {
+        buttonText: '复制',
+        errorText: 'Error',
+        successText: 'Copied',
+      },
     }
   </script>
   <!-- Docsify v4 -->
@@ -26,5 +42,10 @@
   <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-php.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-typescript.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-java.min.js"></script>
+
+  <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/zoom-image.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify-copy-code"></script>
+  <script src="//unpkg.com/docsify-count/dist/countable.js"></script>
 </body>
 </html>
