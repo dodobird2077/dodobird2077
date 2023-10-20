@@ -259,3 +259,8 @@ number=finaly
 2. dev和master分支都修改了(并各自提交)
 
 ![图片](../_media/img/git02.png)
+
+
+### P16.远程仓库
+
+顺便测试分支
