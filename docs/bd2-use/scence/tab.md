@@ -118,9 +118,16 @@ watch(props, (newProps) => {
 ```ts
 import createAxios from '/@/utils/axios'
 
-export function getGoodsOrder() {
+export function getGoodsInfo(id: any) {
     return createAxios({
-        url: '/admin/goods/getGoodsOrder',
+        url: '/admin/goods/getGoodsInfo?id='+id,
+        method: 'get',
+    })
+}
+
+export function getGoodsOrder(id: any) {
+    return createAxios({
+        url: '/admin/goods/getGoodsOrder?id='+id,
         method: 'get',
     })
 }
