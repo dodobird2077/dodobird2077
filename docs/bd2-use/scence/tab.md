@@ -29,61 +29,78 @@ import Detail from './detail.vue'
 
 ```html
 <template>
-    <div>
-         <el-dialog v-model="isOpen" title="商品信息">
+  <div>
+       <el-dialog v-model="isOpen" :title="'商品ID: '+id">
 
-             <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
-                 <el-tab-pane label="商品信息" name="content1">{{  content1 }}</el-tab-pane>
-
-                 <el-tab-pane label="订单日志" name="content2">
-                    <el-descriptions title="订单日志"  :column="2" :border="true">
-                      <el-descriptions-item v-for="item in content2" :label="item.title" >{{ item.id }}</el-descriptions-item>
+           <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
+               <el-tab-pane label="商品信息" name="content1">
+                  <el-descriptions title="商品信息"  :column="2" :border="true">
+                      <el-descriptions-item v-for="item in content1" :label="item.title" >{{ item.id }}</el-descriptions-item>
                     </el-descriptions>
-                 </el-tab-pane>
+               </el-tab-pane>
 
-                 <el-tab-pane label="采购日志" name="content3">{{  content3 }}</el-tab-pane>
+               <el-tab-pane label="订单日志" name="content2">
+                  <el-descriptions title="订单日志"  :column="2" :border="true">
+                    <el-descriptions-item v-for="item in content2" :label="item.title" >{{ item.id }}</el-descriptions-item>
+                  </el-descriptions>
+               </el-tab-pane>
 
-                 <el-tab-pane label="库存日志" name="content4">{{  content4 }}</el-tab-pane>
-             </el-tabs>
-         </el-dialog>
-    </div>
+               <el-tab-pane label="采购日志" name="content3">{{  content3 }}</el-tab-pane>
+
+               <el-tab-pane label="库存日志" name="content4">{{  content4 }}</el-tab-pane>
+           </el-tabs>
+       </el-dialog>
+  </div>
 </template>
 
 <script setup lang='ts'>
-  import { ref, inject } from 'vue'
-  import type { TabsPaneContext } from 'element-plus'
-  import {getGoodsInfo, getGoodsOrder} from '/@/api/public/goods/goods'
+import { ref, inject, onMounted, watch } from 'vue'
+import type { TabsPaneContext } from 'element-plus'
+import {getGoodsInfo, getGoodsOrder} from '/@/api/public/goods/goods'
 
-  const activeName = ref('first')
+// 设为1的话, 无法加载首次数据
+const activeName = ref('content1')
 
-  const content1 = ref();
-  const content2 = ref([] as any[]);
-  const content3 = ref();
-  const content4 = ref();
+const content1 = ref([] as any[]);
+const content2 = ref([] as any[]);
+const content3 = ref();
+const content4 = ref();
+
+const props = defineProps({
+  id: String, // 假设 title 是字符串类型，根据你的实际需要修改
+})
 
 
-  const handleClick = (tab: TabsPaneContext, event: Event) => {
-      console.log(tab.index);
-      switch (tab.index) {
-        case '0':
-          content1.value = "获取商品信息";
-          break;
-        case '1':
-          // content2.value = [{title:"张三", id: 90}, {title:"李四", id: 23}];
-          getGoodsOrder().then( (res) => {
-            content2.value = res.data.list
-          })
-          break;
-        case '2':
-          content3.value = "获取采购日志";
-          break;
-        case '3':
-          content4.value = "获取库存日志";
-          break;
-      }
-  }
-  // 弹窗
-  const isOpen = inject('isOpen')
+const handleClick = (tab: TabsPaneContext, event: Event) => {
+    console.log(tab.index);
+    switch (tab.index) {
+      case '0':
+        getGoodsInfo(props.id).then( (res) => {
+          content1.value = res.data.list
+        })
+        break;
+      case '1':
+        // content2.value = [{title:"张三", id: 90}, {title:"李四", id: 23}];
+        getGoodsOrder(props.id).then( (res) => {
+          content2.value = res.data.list
+        })
+        break;
+      case '2':
+        content3.value = "获取采购日志";
+        break;
+      case '3':
+        content4.value = "获取库存日志";
+        break;
+    }
+}
+// 弹窗
+const isOpen = inject('isOpen')
+
+watch(props, (newProps) => {
+  console.log('id changed:', newProps.id);
+  handleClick({ index: '1' } as TabsPaneContext, new Event('click'));
+});
+
 </script>
 <style>
 .demo-tabs > .el-tabs__content {
