@@ -96,9 +96,14 @@ const handleClick = (tab: TabsPaneContext, event: Event) => {
 // 弹窗
 const isOpen = inject('isOpen')
 
+// 用于再次打开弹窗时, 刷新tab的数据
 watch(props, (newProps) => {
   console.log('id changed:', newProps.id);
+  handleClick({ index: '0' } as TabsPaneContext, new Event('click'));
   handleClick({ index: '1' } as TabsPaneContext, new Event('click'));
+  // 将所有需要刷新的tab都放上去, 否则还会显示上一次打开的
+  // handleClick({ index: '2' } as TabsPaneContext, new Event('click'));
+  // handleClick({ index: '3' } as TabsPaneContext, new Event('click'));
 });
 
 </script>
