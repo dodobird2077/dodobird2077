@@ -267,3 +267,132 @@ number=finaly
 1. 首先是创建账号, 
 2. 配置SSH公钥(如过没配置过, 在设置-SSH公钥,之后按照提示操作)
 3. 添加仓库(不用添加README.md之类的)
+
+
+- 添加远程仓库
+
+```bash
+git remote add origin git@gitee.com:xxxxx
+```
+
+- 查看远程仓库
+
+```bash
+git remote
+git remote -v
+```
+
+- 推送到远程仓库
+
+```bash
+git push origin master
+
+# 推送时同时绑定远端分支, 之后推送就直接git push, 不用写全:git push origin master
+git push -u origin master
+git push --set-upstream origin master
+```
+
+- 绑定远端的Master和本地的master(如果第一次推送的时候没绑定)  
+
+```bash
+$ git branch --set-upstream-to=origin/master master
+branch 'master' set up to track 'origin/master'.
+```
+
+### P19,20 克隆和拉取代码
+
+```bash
+git clone
+```
+
+- 拉取
+
+```bash
+git pull
+```
+
+### 21.(重点) 解决冲突
+
+- 1.首先克隆两个仓库, 分别模拟两个用户
+
+```bash
+# 用户A
+git clone git@github.com:dodobird2077/git-test.git userA
+cd userA
+
+# 用户B
+git clone git@github.com:dodobird2077/git-test.git userB
+cd userB
+```
+
+- 2.用户A修改文件内容, 并提交, 推送
+
+```bash
+cd userA
+vi conflict.txt 
+内容改成: count=userA-01
+
+git add -A
+git commit -m '用户A修改-01'
+git push origin maset
+```
+
+- 2.用户B修改,提交. 然后直接pull拉取
+
+```bash
+cd userB
+vi conflict.txt 
+内容改成: count=userB-01
+
+git add -A
+git commit -m '用户B修改-01'
+```
+
+- git pull, 此时提示冲突
+
+```bash
+$ git pull
+Auto-merging conflict.txt
+CONFLICT (content): Merge conflict in conflict.txt
+Automatic merge failed; fix conflicts and then commit the result.
+```
+
+- cat conflict.txt 查看冲突文件
+
+```
+$ cat conflict.txt
+<<<<<<< HEAD
+count=userB-01
+=======
+count=userA-01
+>>>>>>> 7134ba27a8376e828924c243bb1d3b5c0fa32478
+```
+
+- 修改冲突文件
+
+```
+vi conflict.txt
+内容改为: count=userA&B-01
+```
+
+- 添加, 提交, 推送解决冲突后的文件
+
+```bash
+$ git add conflict.txt
+
+$ git commit -m '解决AB冲突'
+[master e8d88eb] 解决AB冲突
+
+$ git push
+
+# 查看分支记录
+$ git-log
+*   e8d88eb (HEAD -> master, origin/master, origin/HEAD) 解决AB冲突
+|\
+| * 7134ba2 用户A: count=userA-01
+* | 365a312 用户B修改-01
+|/
+* 0beb744 用户改成5
+```
+
+### 23.(重点) Idea中使用git
