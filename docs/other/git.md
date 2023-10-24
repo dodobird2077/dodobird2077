@@ -396,3 +396,98 @@ $ git-log
 ```
 
 ### 23.(重点) Idea中使用git
+
+#### 1. 在github上面创建一个空白项目
+
+#### 2. 使用idea创建一个空白的SpringBoot项目
+
+- 2.1 在iDea中 File-New Project
+- 2.2 修改Artifact, Group, Packname, Java版本为11
+- 2.3 下一页中, SpringBoot版本选2.7, 勾选1.Web-SpringWeb, 2.SQL-Mybatis Framework, 3.MySQl-Driver, 4.DevelopTool-Lombok
+- 2.4 创建好项目, 删除掉一些无用的文件, 然后创建配置文件`src/main/resources/application.yml`
+- 2.5 运行项目
+
+```yml
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/ssm
+    username: root
+    password: root
+```
+
+
+#### 3.Idea创建版本控制
+
+1. 初始化仓库: VSS - Create Git Respository - OK
+
+2. 提交(Commit)
+
+![logo](../_media/img/ide-git-01.png ':size=1200')
+
+3. 查看提交日志: 点击左下角 Git
+
+4. `推送` 菜单栏- Git - Push, 弹窗后显示 Define remote的话, 点击一下, 把github创建空白项目的: git@github.com:you_name/git_test.git 填入
+
+![logo](../_media/img/ide-git-02.png ':size=600')
+
+
+#### 4.测试修改和提交
+
+1. 在 application.yml中随便加点注释, 当修改了
+2. 点击Git - commit 弹窗中填写备注`测试修改`,选择 commit and push直接提交推送
+3. 查看提交日志: 点击左下角 Git
+
+
+#### 5.克隆项目 (模拟用户B)
+
+1.Git - Clone - 填写Url - 填写目录 `D:\JAVA\WWW\git_test_userB`, 用来模拟另外一个用户
+
+2. 模拟冲突, 用户A, B同时修改 `src/test/java/com/gtest/GtestApplicationTests.java`
+
+```java
+
+// 用户A修改
+@Test
+void testUserA()
+{
+    System.out.println("用户A测试代码");
+}
+
+// 用户B修改
+@Test
+void testUserB()
+{
+    System.out.println("用户B的测试");
+}
+```
+
+3. 用户A先提交修改, 并推送 commit and push
+
+4. 用户B提交, 但不推送先 (无论什么时候推送前, 应该都先git pull拉取一下代码)
+
+5. 用户B拉取代码, git pull (有选项的话, 都选默认), 拉取代码发现提示有冲突提示弹窗
+
+![logo](../_media/img/ide-git-03.png ':size=600')
+
+6. 点击Merge, 进行冲突处理
+
+![logo](../_media/img/ide-git-06.png ':size=900')
+
+- 点击 >> 和 << 将代码采用到工作台, 得到解决冲突后的最终版本
+
+![logo](../_media/img/ide-git-07.png ':size=900')
+
+7. B用户将代码提交
+
+8. A用户将代码拉取git pull
+
+```bash
+$ git-log
+*   e613b60 (HEAD -> master, origin/master, origin/HEAD) B用户, 解决冲突并提交
+|\
+| * 1ba7d08 用户A先提交修改
+* | ce01fa0 用户B提交, 但不推送
+|/
+* 15944b1 测试修改
+* 10d2ae7 初始化项目
+```
