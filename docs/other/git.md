@@ -465,7 +465,7 @@ void testUserB()
 
 4. 用户B提交, 但不推送先 (无论什么时候推送前, 应该都先git pull拉取一下代码)
 
-5. 用户B拉取代码, git pull (有选项的话, 都选默认), 拉取代码发现提示有冲突提示弹窗
+5. 用户B拉取代码, git pull (有选项的话, 都选默认), 拉取代码发现提示有冲突提示弹窗 `下面这张图片的提示忽略, 不close, 而是选择merge解决冲突, 如果点击了close, 也可以后面点击commit弹窗有个resolve来操作`
 
 ![logo](../_media/img/ide-git-03.png ':size=600')
 
