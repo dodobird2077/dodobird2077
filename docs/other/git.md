@@ -395,11 +395,11 @@ $ git-log
 * 0beb744 用户改成5
 ```
 
-### 23.(重点) Idea中使用git
+## 23(重点) Idea中使用git
 
-#### 1. 在github上面创建一个空白项目
+### 1. 在github上面创建一个空白项目
 
-#### 2. 使用idea创建一个空白的SpringBoot项目
+### 2. 使用idea创建一个空白的SpringBoot项目
 
 - 2.1 在iDea中 File-New Project
 - 2.2 修改Artifact, Group, Packname, Java版本为11
@@ -416,7 +416,7 @@ spring:
 ```
 
 
-#### 3.Idea创建版本控制
+### 3.Idea创建版本控制
 
 1. 初始化仓库: VSS - Create Git Respository - OK
 
@@ -431,14 +431,14 @@ spring:
 ![logo](../_media/img/ide-git-02.png ':size=600')
 
 
-#### 4.测试修改和提交
+### 4.测试修改和提交
 
 1. 在 application.yml中随便加点注释, 当修改了
 2. 点击Git - commit 弹窗中填写备注`测试修改`,选择 commit and push直接提交推送
 3. 查看提交日志: 点击左下角 Git
 
 
-#### 5.克隆项目 (模拟用户B)
+### 5.克隆项目 (模拟用户B)
 
 1.Git - Clone - 填写Url - 填写目录 `D:\JAVA\WWW\git_test_userB`, 用来模拟另外一个用户
 
