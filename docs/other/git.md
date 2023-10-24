@@ -477,9 +477,9 @@ void testUserB()
 
 ![logo](../_media/img/ide-git-07.png ':size=900')
 
-7. B用户将代码提交
+7. B用户将代码提交, 推送到远程仓库
 
-8. A用户将代码拉取git pull
+8. A用户将代码拉取git pull, 同步到本地
 
 ```bash
 $ git-log
