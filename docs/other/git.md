@@ -491,3 +491,28 @@ $ git-log
 * 15944b1 测试修改
 * 10d2ae7 初始化项目
 ```
+
+### idea分支操作
+
+1. 新建分支
+- 在右下角点击分支名(master), new branch (还可以在左侧分支树右键创建分支)
+
+## 实战场景
+
+### P27.场景分析
+
+`这里有几张idea操作git的截图, 百度网盘`
+
+```bash
+https://pan.baidu.com/s/1mYd84HilKdL4wtC4R2UZUA
+提取码: h7fd 
+```
+
+### P28. 几条铁令
+
+1. **切换分支前, 一定要先提交commit代码, 否则代码会丢失**
+2. 代码及时提交, 提交了就不会丢了
+3. 遇到任何问题, 都不要删除目录文件
+
+
+![logo](../_media/img/ide-git-total.png ':size=700')

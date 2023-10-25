@@ -3,8 +3,9 @@
 * [首页](/)
 
 * docsify 入门
-    * [文档和目录结构](guide/dir/)
-    * [快速安装](guide/install/)
+    * [文档和目录结构](guide/dir.md)
+    * [快速安装](guide/install.md)
+    * [标题级别规范](guide/title.md)
 
 * 综合 
     * [综合](other/other.md)
@@ -16,8 +17,8 @@
 * BuildAdmin 2.0 安装
     * [安装环境准备](/buildadmin/install/prepare.md)
     * [快速安装](/buildadmin/install/)
-    * [初始化项目](/buildadmin/init/)
-    * [版本更新](/buildadmin/update/)
+    * [初始化项目](/buildadmin/init.md)
+    * [版本更新](/buildadmin/update.md)
 
 * BuildAdmin 2.0 使用
     * [1.下拉列表](/bd2-use/select/)
