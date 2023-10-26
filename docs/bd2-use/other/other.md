@@ -16,3 +16,8 @@
 ###  [4.首页仪表盘自定义](/bd2-use/other/dashboard.md)
 
 - 首页图表
+
+
+###  [5.允许输入中文用户名](/bd2-use/other/chinese.md)
+
+- 登录和添加用户
