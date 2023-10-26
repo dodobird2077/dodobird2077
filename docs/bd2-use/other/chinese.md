@@ -11,7 +11,9 @@ Changes not staged for commit:
         modified:   web/src/utils/validate.ts
 ```
 
-## 1.后端验证器(自定义的) `app/admin/validate/Member.php`
+## 1.后端验证器(自定义的) 
+
+`app/admin/validate/Member.php`
 
 ```php
 class Member extends Validate
@@ -47,7 +49,9 @@ class Member extends Validate
 ```
 
 
-## 2.语言包, 登录框提示词 `web/src/lang/common/zh-cn/validate.ts`
+## 2.语言包, 登录框提示词 
+
+`web/src/lang/common/zh-cn/validate.ts`
 
 ```ts
 export default {
@@ -58,10 +62,11 @@ export default {
 ```
 
 
-## 3.前端登录验证器 `web/src/utils/validate.ts` 30行左右
+## 3.前端登录验证器 
+
+`web/src/utils/validate.ts` 30行左右
 
 ```ts
-
 /**
  * 账户名验证
  */
