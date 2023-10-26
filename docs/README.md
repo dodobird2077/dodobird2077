@@ -6,6 +6,8 @@ hello docsify , wtf!
 
 Chanage ReadMe
 
+- 1.研究前端二维码生成
+
 
 [>> Docsify入门](/guide/install/)
 
