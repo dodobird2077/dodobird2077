@@ -7,7 +7,13 @@
   <meta name="description" content="Description">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
   <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
-  
+  <style>
+    .target {
+      /* 新标签页中打开 */
+      font-size: 16px; 
+      text-decoration: none;
+    }
+  </style>
 </head>
 <body>
   <div id="app"></div>
@@ -20,6 +26,8 @@
       coverpage: true, //封面
       subMaxLevel:3, //设置左侧菜单栏层级
       // loadNavBar: true, //右上角的导航栏, 如果不显示和上面那个层级有关
+
+      sidebarDisplayLevel: 0, // set sidebar display level
 
       // 搜索功能
       search: {
@@ -49,6 +57,12 @@
   <script src="//cdn.jsdelivr.net/npm/docsify-copy-code"></script>
   <script src="//unpkg.com/docsify-count/dist/countable.js"></script>
   <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/emoji.min.js"></script>
+
+  <!-- 折叠 -->
+  <!-- <script src="//cdn.jsdelivr.net/npm/docsify-sidebar-collapse/dist/docsify-sidebar-collapse.min.js"></script> -->
+
+  <!-- 返回顶部 -->
+  <script src="https://qiniu.19aq.com/docsify-backTop.min.js"></script>
 
 </body>
 </html>
