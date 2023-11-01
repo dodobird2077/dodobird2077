@@ -1,7 +1,8 @@
 # 综合
 
 
-## [vue](other/vue/README.md)
-## [amazon](other/amazon/README.md)
-## [tcp](other/tcp/README.md)
-## [性能优化](other/fast/README.md)
+## [vue](other/public/vue.md)
+## [amazon](other/public/amazon.md)
+## [tcp](other/public/tcp.md)
+## [性能优化](other/public/fast.md)
+## [算法](other/public/algorithm.md)

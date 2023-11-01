@@ -11,6 +11,7 @@
     * [综合](other/other.md)
     * [git](other/git.md)
     * [docker](other/docker.md)
+    * [dnmp](other/dnmp.md)
 * Javaweb2023
     * [说明](/Javaweb2023/README.md)
 
