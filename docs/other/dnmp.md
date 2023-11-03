@@ -46,7 +46,7 @@ PHP代码在文件 `./www/localhost/index.php`
 
 
 
-## 部署一个dcat项目
+## 1.部署一个dcat项目
 
 ```
 1.阿里云镜像
@@ -103,3 +103,85 @@ chmod 600 .env
 
 chown -R www-data:www-data /www/localhost/storage
 ```
+
+### 简单配置项目
+
+```
+1.设为中文
+config/app.php 设置 locale 参数的值为 zh_CN
+
+2.常见配置和问题
+https://learnku.com/docs/dcat-admin/2.x/common-problem/8088
+```
+
+然后访问localhost和localhost/admin即可
+
+## 2.搭建另一个虚拟域名网站
+
+1. 使用php8镜像 (yml中开启, 拉取不了的话手动拉取)
+2. 添加一个nginx的vhost配置 `services\nginx\conf.d\demo88.conf`
+
+```conf
+server {
+    listen       80;
+    server_name  demo88.cc;
+    root   /www/bd;
+    index  index.php index.html index.htm;
+    access_log /dev/null;
+    error_log  /var/log/nginx/nginx.localhost.error.log  warn;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+    location ~ [^/]\.php(/|$) {
+        fastcgi_pass   php80:9000;
+        include        fastcgi-php.conf;
+        include        fastcgi_params;
+    }
+}
+```
+
+3. windows 修改配置 `C:\Windows\System32\drivers\etc\hosts`
+
+```bash
+127.0.0.1 demo88.cc
+```
+
+3. 添加主页文件, index.php中只有个phpinfo(); 注意不要有乱码
+
+```
+ls /www/bd
+index.html  index.php
+```
+
+4. 进入nginx容器, 重载Nginx配置, 访问域名, 成功 
+
+`中途更换过一些域名, 到时会访问到真实的线上域名, 多更换测试几次成功了`
+
+
+
+## 3.部署buildAdmin项目(上线项目, 非本地开发环境)
+
+- 说明: 由于bd框架, 使用的是php think run + npm dev的方式来运行, 感觉不太适合docker环境, 这里只测试部分编译后的bd项目, 模拟其上线测试
+
+1. 使用上一步配置来搭建
+
+2. 添加一个nginx的vhost配置
+
+3. 克隆项目
+
+
+## 3.测试webman部署
+
+
+## 4.测试redis
+
+## 5.测试rabbitmq
+
+## 6.测试elasticsearch
+
+## 7.测试mongodb
