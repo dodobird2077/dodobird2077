@@ -172,8 +172,83 @@ index.html  index.php
 
 2. 添加一个nginx的vhost配置
 
-3. 克隆项目
+3. 直接在github下载此项目(因为私有项目不能直接clone)
 
+4. 复制数据库. 并配置数据库, 让php80可以访问Mysql容器
+
+```ini
+[DATABASE]
+TYPE = mysql
+HOSTNAME = mysql5
+DATABASE = bd
+USERNAME = root
+PASSWORD = 123456
+HOSTPORT = 3306
+CHARSET = utf8mb4
+DEBUG = true
+```
+
+5. 配置nginx文件
+
+```conf
+server {
+    listen       80;
+    server_name  demo88.cc;
+    root   /www/bd/public;
+    index  index.php index.html index.htm;
+    #charset koi8-r;
+    
+    access_log /dev/null;
+    #access_log  /var/log/nginx/nginx.localhost.access.log  main;
+    error_log  /var/log/nginx/nginx.localhost.error.log  warn;
+
+    location / {
+        # 将 index.html 放在第一位可以实现隐藏 index.html
+        index index.html index.php error/index.html;
+
+        # 这一段即为 URL重写规则 请确保存在
+        if (!-e $request_filename) {
+            rewrite  ^(.*)$  /index.php?s=/$1  last;
+            break;
+        }
+        # 结束
+    }
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page 
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+    # proxy the PHP scripts to Apache listening on 127.0.0.1:80
+    #
+    #location ~ \.php$ {
+    #    proxy_pass   http://127.0.0.1;
+    #}
+
+    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+    #
+    location ~ [^/]\.php(/|$) {
+        fastcgi_pass   php80:9000;
+        include        fastcgi-php.conf;
+        include        fastcgi_params;
+    }
+
+    # deny access to .htaccess files, if Apache's document root
+    # concurs with nginx's one
+    #
+    #location ~ /\.ht {
+    #    deny  all;
+    #}
+}
+
+```
+
+6. 浏览器打开 即可
+
+`http://demo88.cc` 
 
 ## 3.测试webman部署
 

@@ -50,10 +50,21 @@ https://www.cnblogs.com/Flat-White/p/17107494.html
 }
 ```
 
-## 2.1 常见问题 无法拉取php80镜像问题
+## 三 常见问题 
+
+### 1.无法拉取php80镜像问题
 
 ```bash
 => ERROR [php80 internal] load metadata for docker.io/library/php:8.0.30-fpm-alpine3.13# 
 # 解决方式: 手动拉取, 并修改版本8.0.30为8.0.13(.env中)
 docker pull php:8.0.13-fpm-alpine3.13
+```
+
+### 2.宿主机使用Navicat链接容器内的mysql
+
+```sh
+主机: 127.0.0.1 #没错, 就是这个
+端口: 3305  #dnmp中是宿主机的3305映射到容器的3306
+用户名: root
+密码: 123456
 ```
