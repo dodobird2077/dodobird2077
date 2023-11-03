@@ -43,3 +43,63 @@ $ docker-compose up                                 # 启动
 4. 在浏览器中访问 `http://localhost`
 
 PHP代码在文件 `./www/localhost/index.php`
+
+
+
+## 部署一个dcat项目
+
+```
+1.阿里云镜像
+composer config -g repo.packagist composer https://mirrors.aliyun.com/composer/
+
+
+2.进入到php容器
+cd /www/localhost
+cd ..
+composer  create-project --prefer-dist laravel/laravel localhost  7.*
+
+3.创建数据库: dcat
+mysql -uroot -p123456
+create database dcat;
+
+4.安装 dcat-admin
+composer require dcat/laravel-admin:"2.*" -vvv
+
+5.发布资源
+php artisan admin:publish
+
+6.修改app/Providers/AppServiceProvider.php的boot方法,添加
+\Schema::defaultStringLength(191);
+
+7.安装数据库
+php artisan admin:install
+
+
+```
+
+### 配置Nginx
+
+```
+dnmp\dnmp-master\services\nginx\conf.d\localhost.conf
+
+1.配置nginx重写规则
+location / {
+    try_files $uri $uri/ /index.php?$query_string;
+}
+
+2.修改默认主页
+root   /www/localhost/public;
+
+```
+
+### 配置目录权限
+
+```
+1.进入php容器
+
+chmod -R 775 /www/localhost/storage/
+chmod -R 775 /www/localhost/bootstrap/cache/
+chmod 600 .env
+
+chown -R www-data:www-data /www/localhost/storage
+```
