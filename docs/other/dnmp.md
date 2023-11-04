@@ -145,7 +145,7 @@ server {
 }
 ```
 
-3. windows 修改配置 `C:\Windows\System32\drivers\etc\hosts`
+3. windows 修改配置hosts文件 `C:\Windows\System32\drivers\etc\hosts`
 
 ```bash
 127.0.0.1 demo88.cc
@@ -250,13 +250,111 @@ server {
 
 `http://demo88.cc` 
 
-## 3.测试webman部署
+## 4.测试部署普通TP6项目
+
+1. 打开TP6官网, 下载tp6.0.10版本
+2. 进入php容器
+3. 安装项目: `composer create-project topthink/think /www/tp6`
+4. 配置nginx, 这里使用默认的php7.4
+
+```conf
+server {
+    listen       80;
+    server_name  demotp6.cc;
+    root   /www/tp6/public;
+    index  index.php index.html index.htm;
+    access_log /dev/null;
+    error_log  /var/log/nginx/nginx.localhost.error.log  warn;
+    location / {
+        # 将 index.html 放在第一位可以实现隐藏 index.html
+        index index.html index.php error/index.html;
+        # 这一段即为 URL重写规则 请确保存在
+        if (!-e $request_filename) {
+            rewrite  ^(.*)$  /index.php?s=/$1  last;
+            break;
+        }
+    }
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+    location ~ [^/]\.php(/|$) {
+        fastcgi_pass   php:9000;
+        include        fastcgi-php.conf;
+        include        fastcgi_params;
+    }
+}
+```
+
+## 5.测试redis, 使用dcat项目测试, 写接口进行测试
+
+### 5.1 创建redis容器
+- 1.首先在yml中打开redis, 然后执行docker-compose up -d redis, 单独构建redis容器
 
 
-## 4.测试redis
+### 5.2 配置laravel项目
 
-## 5.测试rabbitmq
+A. 修改laravel的 .env文件
 
-## 6.测试elasticsearch
+```ini
+REDIS_HOST=redis #redis容器的名称
+REDIS_PASSWORD=null
+REDIS_PORT=6379
+```
 
-## 7.测试mongodb
+### 5.3 创建测试控制器
+
+1. 进入php7的容器
+2. 执行`php artisan make:controller TestApi` 生成测试控制器
+
+```php
+namespace App\Http\Controllers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redis;
+
+class TestApi extends Controller
+{
+    //
+    public function redis(Request $request)
+    {
+        $key = 'redis_cache'; // 缓存的key
+        $data = Redis::get($key); // 从缓存中获取数据
+        if (!$data) {
+            $data = [
+                'name' => 'John Doe',
+                'age' => 30,
+                'time' => date("Y-m-d H:i:s")
+            ];
+            Redis::set($key, json_encode($data), 10); // 将数据保存到缓存中
+        }
+        return response()->json(json_decode(Redis::get($key), true));
+    }
+}
+```
+3. 修改路由文件 `routes\api.php`, 添加路由
+
+```php
+Route::get('/redis', "App\Http\Controllers\TestApi@redis");
+```
+4. 执行 `php artisan route:list` 查看路由
+5. postman中访问测试接口 `localhost/api/redis`, **done**
+
+```js
+{
+    "name": "John Doe",
+    "age": 30,
+    "time": "2023-11-04 06:48:01"
+}
+```
+
+## 6.测试rabbitmq
+
+## 7.测试elasticsearch
+
+## 8.测试mongodb
+
+## 9.测试webman部署
+
+## 10.研究curl, SSL
+
+## 11.测试定时任务和supervisor
