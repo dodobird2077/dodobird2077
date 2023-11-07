@@ -1,6 +1,6 @@
 # 说明
 
-## 课程鸟瞰
+### 一.课程鸟瞰
 
 https://space.bilibili.com/37974444
 
@@ -15,7 +15,7 @@ https://www.bilibili.com/video/BV1m84y1w7Tb/?vd_source=b620a69473c31bfeacc5e3bc2
 前置: 只需要java基础
 
 
-## 课程目录
+### 二.课程目录
 
 
 - T1_13节-HTML (跳过)
@@ -100,7 +100,6 @@ https://www.bilibili.com/video/BV1m84y1w7Tb/?vd_source=b620a69473c31bfeacc5e3bc2
     - 2.Maven继承关系的实现
     - 2.1 - 继承之版本锁定
     - 3.Maven聚合(打包上线)
-
 
 
 
