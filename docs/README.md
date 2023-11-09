@@ -1,17 +1,12 @@
-# Headline
-
-> An awesome project.
-
-hello docsify , wtf!
-
-Chanage ReadMe
-
-- 1.研究前端二维码生成
+# 欢迎来到`烂笔头`
 
 
-[>> Docsify入门](/guide/install/)
+> 好记性不如烂笔头
 
-[filename](/_media/file/test.txt ':include')
+> 一半时间学习, 一半时间整理笔记
+
+> 既然选择, 就努力登顶; 唯有此事不可退缩
+
 
 ![logo](https://docsify.js.org/_media/icon.svg ':size=100')
 
