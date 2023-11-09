@@ -18,6 +18,7 @@
 * Javaweb2023
     * [说明](/Javaweb2023/remark.md)
     * [课堂笔记](/Javaweb2023/note.md)
+    * [常用和问题](/Javaweb2023/problem.md)
 
 * BuildAdmin 2.0 安装
     * [安装环境准备](/buildadmin/prepare.md)

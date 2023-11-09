@@ -305,3 +305,594 @@ public class Dept {
 }
 ```
 
+
+## Part.C 前后端联调
+
+
+- 注意, 这里使用教程准备的Nginx, 它里面设置好了Nginx 反向代理,端口等, 连前端文件都放在里面
+- 将本低的nginx先暂停, 用他这个即可,java的程序启动, 会代理到java的8080端口
+
+
+![logo](../../_media/img/java/day10_c1.png ':size=300')
+
+[点击此处下载文件](../../_media/file/nginx.zip)
+
+
+```sh
+worker_processes  1;
+events {
+    worker_connections  1024;
+}
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+    sendfile        on;
+    keepalive_timeout  65;
+    server {
+        listen       90;
+        server_name  localhost;
+
+        location / {
+            root   html;
+            index  index.html index.htm;
+        }
+
+        location ^~ /api/ {
+			rewrite ^/api/(.*)$ /$1 break;
+			proxy_pass http://localhost:8080;
+        }
+        
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   html;
+        }
+    }
+}
+```
+
+
+![logo](../../_media/img/java/day10_c2.png ':size=700')
+
+
+## Part.D 分页查询的实现
+
+
+### 分页查询思路
+
+![logo](../../_media/img/java/day10_d1.png ':size=500')
+
+### 代码实现
+
+- 1. 封装一个PageBean类, 用来返回分页列表数据
+
+```java
+package com.tlias.pojo;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import java.util.List;
+
+/**
+ * 分页查询结果封装类
+ */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class PageBean {
+
+    private Long total;//总记录数
+    private List rows;//数据列表
+}
+```
+
+- 2.在控制器中定义Http接口
+
+```java
+package com.tlias.controller;
+
+import com.tlias.pojo.PageBean;
+import com.tlias.pojo.Result;
+import com.tlias.service.EmpService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.time.LocalDate;
+
+@Slf4j
+@RestController
+public class EmpController {
+
+    @Autowired
+    private EmpService empService;
+
+    @GetMapping("/emps")
+    public Result page(
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer pageSize
+    )
+    {
+        log.info("分页查询, 参数: {}, {}", page, pageSize);
+        PageBean pageBean = empService.page(page, pageSize);
+        return Result.success(pageBean);
+    }
+
+}
+```
+
+- 3.在Service中定义接口类
+
+```java
+package com.tlias.service;
+
+import com.tlias.pojo.PageBean;
+
+public interface EmpService {
+    PageBean page(Integer page, Integer pageSize);
+}
+```
+
+- 4.接口实现类中实现分页方法, 调用DAO层的Mapper
+
+```java
+package com.tlias.service.impl;
+
+import com.tlias.mapper.EmpMapper;
+import com.tlias.pojo.Emp;
+import com.tlias.pojo.PageBean;
+import com.tlias.service.EmpService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class EmpServiceImpl implements EmpService {
+
+    @Autowired
+    private EmpMapper empMapper;
+
+
+    @Override
+    public PageBean page(Integer page, Integer pageSize) {
+
+        // 1.获取总记录数
+        Long count = empMapper.count(); // 总数目
+
+        // 2.获取分页结果列表
+        Integer start = (page - 1) * pageSize;
+        List<Emp> empList = empMapper.page(start, pageSize);
+
+        // 3.封装pageBean
+        PageBean pageBean = new PageBean(count, empList);
+
+        return pageBean;
+    }
+}
+```
+
+- 5.Mapper(DAO层) 查询数据库
+
+```java
+package com.tlias.mapper;
+
+import com.tlias.pojo.Emp;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
+
+@Mapper
+public interface EmpMapper {
+
+    @Select("SELECT count(*) from emp")
+    public Long count();
+
+    @Select("SELECT * from emp limit #{start},#{pageSize}")
+    public List<Emp> page(Integer start, Integer pageSize);
+}
+```
+
+
+## Part.E 分页插件PageHelper
+
+
+### 分页插件 PageHelper
+
+- 1.在pom导入依赖
+
+```xml
+<dependency>
+    <groupId>com.github.pagehelper</groupId>
+    <artifactId>pagehelper-spring-boot-starter</artifactId>
+    <version>1.4.2</version>
+</dependency>
+```
+
+- 2.注释掉原来的EmpMapper方法, 添加普通的select查询
+
+```java
+package com.tlias.mapper;
+import com.tlias.pojo.Emp;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
+import java.util.List;
+@Mapper
+public interface EmpMapper {
+//    @Select("SELECT count(*) from emp")
+//    public Long count();
+//
+//    @Select("SELECT * from emp limit #{start},#{pageSize}")
+//    public List<Emp> page(Integer start, Integer pageSize);
+    // 使用pageHelper来分页, 这里正常写
+    @Select("SELECT * from emp")
+    public List<Emp> list();
+}
+```
+
+- 3.在service的实现类, 修改获取列表数据的代码
+
+```java
+
+package com.tlias.service.impl;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.tlias.mapper.EmpMapper;
+import com.tlias.pojo.Emp;
+import com.tlias.pojo.PageBean;
+import com.tlias.service.EmpService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.util.List;
+@Service
+public class EmpServiceImpl implements EmpService {
+    @Autowired
+    private EmpMapper empMapper;
+// 注释掉原来的service实现类的分页方法
+//    @Override
+//    public PageBean page(Integer page, Integer pageSize) {
+//
+//        // 1.获取总记录数
+//        Long count = empMapper.count(); // 总数目
+//
+//        // 2.获取分页结果列表
+//        Integer start = (page - 1) * pageSize;
+//        List<Emp> empList = empMapper.page(start, pageSize);
+//
+//        // 3.封装pageBean
+//        PageBean pageBean = new PageBean(count, empList);
+//
+//        return pageBean;
+//    }
+    // 使用pageHelper来分页
+    @Override
+    public PageBean page(Integer page, Integer pageSize) {
+        // 1.设置分页参数
+        PageHelper.startPage(page, pageSize);
+        // 2.执行查询
+        List<Emp> empList = empMapper.list();
+        Page<Emp> p = (Page<Emp>) empList;
+        // 3.封装pageBean
+        PageBean pageBean = new PageBean(p.getTotal(), p.getResult());
+        return pageBean;
+    }
+}
+```
+
+- 4.controller的代码不需要修改
+
+![logo](../../_media/img/java/day10_e1.png ':size=500')
+
+## Part.F 条件查询(Xml)
+
+### 注意xml创建目录需要逐级创建
+
+- 1.首先改写controller, 增加name,gender,begin,end这四个参数
+
+```java
+package com.tlias.controller;
+import com.tlias.pojo.PageBean;
+import com.tlias.pojo.Result;
+import com.tlias.service.EmpService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import java.time.LocalDate;
+@Slf4j
+@RestController
+public class EmpController {
+    @Autowired
+    private EmpService empService;
+    @GetMapping("/emps")
+    public Result page(
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer pageSize,
+            String name,
+            Short gender,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate begin,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end
+    )
+    {
+        log.info("分页查询, 参数: {}, {},{},{},{},{}", page, pageSize,name,gender,begin,end);
+        PageBean pageBean = empService.page(page, pageSize,name,gender,begin,end);
+        return Result.success(pageBean);
+    }
+}
+```
+
+- 2.修改被controller调用的Service, 和Service的实现类
+
+```java
+package com.tlias.service;
+import com.tlias.pojo.PageBean;
+import java.time.LocalDate;
+public interface EmpService {
+    PageBean page(Integer page, Integer pageSize, String name, Short gender, LocalDate begin,LocalDate end);
+}
+
+// servie实现类
+
+package com.tlias.service.impl;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.tlias.mapper.EmpMapper;
+import com.tlias.pojo.Emp;
+import com.tlias.pojo.PageBean;
+import com.tlias.service.EmpService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.time.LocalDate;
+import java.util.List;
+@Service
+public class EmpServiceImpl implements EmpService {
+    @Autowired
+    private EmpMapper empMapper;
+    // 使用pageHelper来分页
+    @Override
+    public PageBean page(Integer page, Integer pageSize, String name, Short gender, LocalDate begin, LocalDate end) {
+        // 1.设置分页参数
+        PageHelper.startPage(page, pageSize);
+        // 2.执行查询
+        List<Emp> empList = empMapper.list(name, gender, begin, end);
+        Page<Emp> p = (Page<Emp>) empList;
+        // 3.封装pageBean
+        PageBean pageBean = new PageBean(p.getTotal(), p.getResult());
+        return pageBean;
+    }
+}
+
+```
+
+- 3.修改mapper, 添加参数. 然后发现SQL需要改写成动态SQL, 所以准备改成xml格式
+
+```java
+package com.tlias.mapper;
+import com.tlias.pojo.Emp;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
+import java.time.LocalDate;
+import java.util.List;
+@Mapper
+public interface EmpMapper {
+    // 使用pageHelper来分页, 这里正常写
+    // @Select("SELECT * from emp ")
+    public List<Emp> list(String name, Short gender, LocalDate begin, LocalDate end);
+}
+
+```
+
+- 4.准备添加xml, 在resouce下添加文件夹(com.tlias.mapper) 和mapper同名同包 (重点: resources目录下创建文件夹需要一级级创建)
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tlias.mapper.EmpMapper">
+    <select id="list" resultType="com.tlias.pojo.Emp">
+        select * from emp
+        <where>
+            <if test="name != null and name != ''">
+                name like concat('%', #{name}, '%')
+            </if>
+            <if test="gender != null">
+                and gender = #{gender}
+            </if>
+            <if test="begin != null and end != null">
+                and entrydate between #{begin} and #{end}
+            </if>
+        </where>
+        order by update_time desc
+    </select>
+</mapper>
+```
+
+## Part.G 删除员工(流程示例)
+
+
+- 这是个批量删除的接口, 不过也很好体现了流程,Day10完结:
+- web请求->控制器->Service(实现类)->Mapper->xml(Mybatis)
+
+- 1.控制器
+
+```java
+package com.tlias.controller;
+
+import com.tlias.pojo.PageBean;
+import com.tlias.pojo.Result;
+import com.tlias.service.EmpService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.List;
+
+@Slf4j
+@RestController
+public class EmpController {
+
+    @Autowired
+    private EmpService empService;
+
+    @GetMapping("/emps")
+    public Result page(
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "10") Integer pageSize,
+            String name,
+            Short gender,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate begin,
+            @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate end
+    )
+    {
+        log.info("分页查询, 参数: {}, {},{},{},{},{}", page, pageSize,name,gender,begin,end);
+        PageBean pageBean = empService.page(page, pageSize,name,gender,begin,end);
+        return Result.success(pageBean);
+    }
+
+    // 删除员工
+    @DeleteMapping("/emps/{ids}")
+    public Result delete(@PathVariable List<Integer> ids)
+    {
+        log.info("批量删除操作, {}", ids);
+        empService.delete(ids);
+        return Result.success();
+    }
+
+}
+```
+
+- 2.Service层-业务逻辑(Service和它的实现类)
+
+```java
+package com.tlias.service;
+
+import com.tlias.pojo.PageBean;
+
+import java.time.LocalDate;
+import java.util.List;
+
+public interface EmpService {
+    PageBean page(Integer page, Integer pageSize, String name, Short gender, LocalDate begin,LocalDate end);
+
+    void delete(List<Integer> ids);
+}
+
+// Service实现类
+
+package com.tlias.service.impl;
+
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.tlias.mapper.EmpMapper;
+import com.tlias.pojo.Emp;
+import com.tlias.pojo.PageBean;
+import com.tlias.service.EmpService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.List;
+
+@Service
+public class EmpServiceImpl implements EmpService {
+
+    @Autowired
+    private EmpMapper empMapper;
+
+    // 使用pageHelper来分页
+    @Override
+    public PageBean page(Integer page, Integer pageSize, String name, Short gender, LocalDate begin, LocalDate end) {
+
+        // 1.设置分页参数
+        PageHelper.startPage(page, pageSize);
+
+        // 2.执行查询
+        List<Emp> empList = empMapper.list(name, gender, begin, end);
+        Page<Emp> p = (Page<Emp>) empList;
+
+        // 3.封装pageBean
+        PageBean pageBean = new PageBean(p.getTotal(), p.getResult());
+
+        return pageBean;
+    }
+
+    // 删除员工
+    @Override
+    public void delete(List<Integer> ids) {
+        empMapper.delete(ids);
+    }
+
+}
+```
+
+- 3.1 Mapper(Dao层)
+
+```java
+package com.tlias.mapper;
+
+import com.tlias.pojo.Emp;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
+
+import java.time.LocalDate;
+import java.util.List;
+
+@Mapper
+public interface EmpMapper {
+
+    // 使用pageHelper来分页, 这里正常写
+//    @Select("SELECT * from emp ") // 注释掉, 就会使用xml
+    public List<Emp> list(String name, Short gender, LocalDate begin, LocalDate end);
+
+    // 删除员工
+    void delete(List<Integer> ids);
+
+}
+```
+
+- 3.2 xml
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tlias.mapper.EmpMapper">
+    <delete id="delete">
+        delete from emp
+        where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <select id="list" resultType="com.tlias.pojo.Emp">
+        select * from emp
+        <where>
+            <if test="name != null and name != ''">
+                name like concat('%', #{name}, '%')
+            </if>
+            <if test="gender != null">
+                and gender = #{gender}
+            </if>
+            <if test="begin != null and end != null">
+                and entrydate between #{begin} and #{end}
+            </if>
+        </where>
+
+        order by update_time desc
+    </select>
+</mapper>
+```
+
+![logo](../../_media/img/java/day10_g1.png ':size=500')
+![logo](../../_media/img/java/day10_g2.png ':size=500')
