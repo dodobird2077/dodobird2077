@@ -43,16 +43,62 @@ Redis 击穿、穿透、雪崩产生原因以及解决思路
 ### 1.1 php实现冒泡排序
 
 ```php
-function bubbleSort($arr) {
-    $len = count($arr);
-    for ($i = 0; $i < $len - 1; $i++) {
-        for ($j = 0; $j < $len - $i - 1; $j++) {
-            if ($arr[$j] > $arr[$j + 1]) {
-            }
-        }
-    }
+
+// 冒泡排序 (错误写法)
+function BubbleSort($arr) 
+{ 
+    for($i = 0; $i < count($arr); $i++) { 
+        for($j = 0; $j < count($arr); $j++) { 
+            echo "[i:{$i}]={$arr[$i]},  [j:{$j}]={$arr[$j]} " . PHP_EOL;
+            if ($arr[$i] > $arr[$j]) { 
+                $num = $arr[$i];
+                $arr[$i] = $arr[$j];
+                $arr[$j] = $num;
+            } 
+        } 
+    } 
+    return $arr; 
 }
+
+// 冒泡排序, 正确写法
+function BubbleSortTrue($arr) 
+{ 
+    // (外层)循环控制冒泡的(轮数)
+    for ($i = 0; $i < count($arr); $i++) { 
+
+        // (内层)循环用于比较相邻元素并进行(交换)
+        // 注意：每轮冒泡将当前未排序部分的最大元素移动到正确的位置
+        // 因此，内层循环不需要再考虑已经排序好的元素，从而提高效率
+
+        for ($j = 0; $j < count($arr) - $i - 1; $j++) { 
+            // 如果前一个元素大于后一个元素，则交换它们的位置
+            if ($arr[$j] > $arr[$j + 1]) {
+                // 交换元素
+                $temp = $arr[$j];
+                $arr[$j] = $arr[$j + 1];
+                $arr[$j + 1] = $temp;
+            }
+        } 
+    } 
+    // 返回排序好的数组
+    return $arr; 
+} 
+
+$array = [4, 2, 7, 1, 9, 5];
+$res = BubbleSortTrue($array); 
+print_r($res);
+// 结果 [1,2,4,5,7,9]
 ```
+
+![logo](../_media/img/suanfa/bubble.gif)
+
+- 图中可以看出：
+    -   第一轮排序将数字 6 移动到最右边；
+    -   第二轮排序将数字 5 移动到最右边，同时中途将 1 和 2 排了序；
+    -   第三轮排序时，没有发生交换，表明排序已经完成，不再继续比较
+
+- `$i, 就是用来控制多少轮的, $j则是用来进行交换的`
+
 
 ### 1.2 二分查找算法
 

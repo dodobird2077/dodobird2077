@@ -484,11 +484,25 @@ class RabbitMQ extends Command
 }
 ```
 
-## 7.部署老项目, dev2
+## 7.测试mongodb (未完成)
 
-## 8.测试elasticsearch
+1. 首先打开yml中 mongodb和adminmongo的注释
 
-## 9.测试mongodb
+2. 查看.env中的配置
+
+```
+MONGODB_VERSION=4.1
+MONGODB_HOST_PORT=27017
+MONGODB_INITDB_ROOT_USERNAME=root
+MONGODB_INITDB_ROOT_PASSWORD=123456
+```
+
+3. 重新构建容器
+
+
+
+## 8.测试elasticsearch, Es,Logtash, kibana
+
 
 ## 10.测试webman部署
 
@@ -497,3 +511,5 @@ class RabbitMQ extends Command
 ## 12.测试定时任务
 
 ## 13.supervisor
+
+## 7.部署老项目, dev2
