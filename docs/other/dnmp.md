@@ -349,12 +349,151 @@ Route::get('/redis', "App\Http\Controllers\TestApi@redis");
 
 ## 6.测试rabbitmq
 
-## 7.测试elasticsearch
+1. 打开yml中,rabbitmq的注释
 
-## 8.测试mongodb
+2. 查看.env中的配置
 
-## 9.测试webman部署
+```
+RABBITMQ_VERSION=management
+RABBITMQ_CONF_FILE=./services/rabbitmq/rabbitmq.yml
+RABBITMQ_HOST_PORT_C=5672
+RABBITMQ_HOST_PORT_S=15672
+RABBITMQ_DEFAULT_USER=myuser
+RABBITMQ_DEFAULT_PASS=mypass
+RABBITMQ_PLUGINS=rabbitmq_amqp1_0
+```
+3. 安装必要扩展, 演示安装扩展, 进入php容器后执行(扩展别写错, 也可以在.env中打开扩展, 重新构建容器)
 
-## 10.研究curl, SSL
+```bash
+ # 注意别写成bcmath, 安装完后php -m |grep bcmath, 没有的话重启容器
+ install-php-extensions bcmath 
+```
 
-## 11.测试定时任务和supervisor
+4. dcat项目中安装rabbitmq `composer require php-amqplib/php-amqplib`
+
+5. 生成测试指令, 编写测试代码 `php artisan command:rabbitmq`
+
+- 使用交换机
+
+```php
+<?php
+
+namespace App\Console\Commands;
+
+use Illuminate\Console\Command;
+use PhpAmqpLib\Connection\AMQPStreamConnection;
+
+class RabbitMQ extends Command
+{
+    protected $signature = 'command:rabbitmq';
+    protected $description = 'Command description';
+    protected $queueName = 'task1';
+    protected $channel = null;
+
+    public $config = [
+        'host' => 'rabbitmq',
+        'port' => 5672,
+        'vhost' => '/',
+        'login' => 'myuser',
+        'password' => 'mypass'
+    ];
+
+    public function __construct()
+    {
+        // 创建连接和信道
+        $connection = new AMQPStreamConnection(
+            $this->config['host'],
+            $this->config['port'],
+            $this->config['login'],
+            $this->config['password'],
+            $this->config['vhost']
+        );
+
+        $this->channel = $connection->channel();
+        parent::__construct();
+    }
+
+    public function handle()
+    {
+        // $this->mqPublish("hello leo");
+        $this->listenQueue($this->queueName);
+    }
+
+    // 1.发送消息到队列
+    public function mqPublish($message)
+    {
+        $this->channel->basic_publish(new \PhpAmqpLib\Message\AMQPMessage($message), '', $this->queueName);
+    }
+
+    // 2.监听消费队列
+    public function listenQueue($queueName)
+    {
+        // 声明一个队列
+        $this->channel->queue_declare($queueName, false, true, false, false);
+
+        // 定义回调函数
+        $callback = function ($message) {
+            echo 'Received message: ', $message->body, PHP_EOL;
+
+            // 在这里添加处理消息的逻辑
+
+            // 手动发送确认消息
+            $message->delivery_info['channel']->basic_ack($message->delivery_info['delivery_tag']);
+        };
+        // 消费队列
+        $this->channel->basic_consume($queueName, '', false, false, false, false, $callback);
+        // 持续等待消息
+        while (count($this->channel->callbacks)) {
+            $this->channel->wait();
+        }
+    }
+
+
+    // 3.使用交换机的方式测试mq
+    public function mqExchange()
+    {
+
+        // 声明一个交换器
+        $exchangeName = 'my_exchange';
+        $this->channel->exchange_declare($exchangeName, 'direct', false, true, false);
+
+        // 发送消息到交换器
+        $message = 'Hello, RabbitMQ!';
+        $this->channel->basic_publish(new \PhpAmqpLib\Message\AMQPMessage($message), $exchangeName, 'routing_key');
+
+        // 声明一个队列
+        $queueName = 'my_queue';
+        $this->channel->queue_declare($queueName, false, true, false, false);
+        $this->channel->queue_bind($queueName, $exchangeName, 'routing_key');
+
+        // 接收消息
+        $callback = function ($message) {
+            echo "Received message: " . $message->body . "\n";
+        };
+
+        $this->channel->basic_consume($queueName, '', false, true, false, false, $callback);
+
+        while (count($this->channel->callbacks)) {
+            $this->channel->wait();
+        }
+
+        // 关闭连接
+        $this->channel->close();
+        echo "RabbitMQ is running";
+    }
+}
+```
+
+## 7.部署老项目, dev2
+
+## 8.测试elasticsearch
+
+## 9.测试mongodb
+
+## 10.测试webman部署
+
+## 11.研究curl, SSL
+
+## 12.测试定时任务
+
+## 13.supervisor
