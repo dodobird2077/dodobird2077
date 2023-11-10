@@ -125,3 +125,5 @@ function binarySearch($arr, $target) {
 
 #### 2.1.2 php8新特性
 
+### 2.2 自己显示substr方法, 主要是通过: `$str[$i]`来进行字符串的截取
+
