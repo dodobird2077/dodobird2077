@@ -7,6 +7,8 @@ git clone https://gitee.com/wonderful-code/buildadmin.git
 
 2. 安装依赖
 ```bash
+# 騰訊云鏡像
+composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
 composer install
 ```
 
