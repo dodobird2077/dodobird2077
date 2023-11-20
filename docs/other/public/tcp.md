@@ -21,3 +21,6 @@ https://markbuild.com/zh/gps%E7%94%B5%E5%AD%90%E5%9B%B4%E6%A0%8F%E7%AE%97%E6%B3%
 
 - VPS推荐
 https://vpshub.org/zh/greencloud/
+
+- 一个项目
+https://gitee.com/wibim/gps180?_from=gitee_search#https://gitee.com/wibim/gps_simulator

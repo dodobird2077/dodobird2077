@@ -14,6 +14,8 @@
     * [docker](other/docker.md)
     * [dnmp](other/dnmp.md)
     * [练习题](other/practice.md)
+    * [MySQL](other/public/MySQL.md)
+
 
 * Javaweb2023
     * [1.说明](/Javaweb2023/remark.md)
