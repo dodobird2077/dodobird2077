@@ -13,7 +13,7 @@
     * [git实战](other/git_more.md)
     * [docker](other/docker.md)
     * [dnmp](other/dnmp.md)
-    * [练习题](other/practice.md)
+    * [汇总](other/practice.md)
     * [MySQL](other/public/MySQL.md)
 
 
