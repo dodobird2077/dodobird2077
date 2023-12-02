@@ -390,3 +390,10 @@ export default {
 ```
 
 ## 方案3: 直接使用vue2版本的巡航轨迹, 做成单页面使用
+
+## 方案4: 将高德地图的巡航轨迹示例改成vue3版本, 然后再慢慢集成播放暂停之类的功能
+
+```
+高德地图的巡航轨迹示例
+https://lbs.amap.com/demo/amap-ui/demos/amap-ui-pathsimplifier/simple-demo
+```
