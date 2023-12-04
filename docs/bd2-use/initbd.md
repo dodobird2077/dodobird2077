@@ -8,5 +8,9 @@
 ####  [ 2.控制器规范](/bd2-use/init/controller.md)   <a class="target" href="/#/bd2-use/init/controller.md" target="_blank">↗</a>
 
 
+
+
+
+
 - 初始化,数据返回等
 
