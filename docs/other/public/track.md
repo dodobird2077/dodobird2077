@@ -7,7 +7,14 @@
 ### x.待处理问题
 1. 小车图片显示
 2. 行驶过的地方改变颜色
-3. 在uniapp, h5中使用
+3. 画面视野问题
+4. 在uniapp, h5中使用
+
+- 问题1解决, 去掉 /@/, 图片放在 `web\public\car.png`
+
+```js
+ import car from "/public/car.png"; 
+```
 
 ### 1.在buildadmin系统中, 安装对应扩展 `pnpm`
 
